@@ -3,7 +3,10 @@
     <h2>Connexion</h2>
     <p class="subtitle">Connecte-toi pour accéder à l’application.</p>
 
-    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+
 
     <form #f="ngForm" (ngSubmit)="onSubmit()">
 
@@ -55,9 +58,9 @@
         </select>
       </div>
 
-      <button type="submit" class="btn btn-primary" [disabled]="loading || f.invalid">
-        {{ loading ? 'Connexion...' : 'Se connecter' }}
-      </button>
+      <button type="submit" [disabled]="loading || f.invalid">
+  {{ loading ? 'Connexion...' : 'Se connecter' }}
+</button>
     </form>
   </div>
 </div>

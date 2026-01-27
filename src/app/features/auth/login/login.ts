@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-login',
@@ -23,29 +25,37 @@ export class Login {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   onSubmit(): void {
+    if(this.loading) return; // Prévenir les doubles soumissions
     this.errorMessage = '';
     this.loading = true;
 
-    const login$ = this.role === 'ADMIN'
-      ? this.authService.loginAdmin(this.username, this.password)
-      : this.authService.loginUser(this.username, this.password);
+    const login$ = this.role === 'ADMIN' ?
+      this.authService.loginAdmin(this.username, this.password) :
+      this.authService.loginUser(this.username, this.password);
 
-    login$.subscribe({
-      next: () => {
-        this.loading = false;
-        
-        // retour là où l'utilisateur voulait aller
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/clients';
-        this.router.navigateByUrl(returnUrl);
-      },
-      error: () => {
-        this.loading = false;
-        this.errorMessage = 'Identifiants incorrects';
-      }
-    });
+      console.log('SUBMIT start - loading:', this.loading);
+
+      login$
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/clients';
+          this.router.navigateByUrl(returnUrl);
+        },
+        error: (err) => {
+          this.loading = false; // immédiat 
+          this.errorMessage = 
+            (err.status === 401 || err.status === 403) ?
+            'Nom d’utilisateur ou mot de passe incorrect' :
+            'Erreur serveur. Réessaie plus tard.';
+
+            this.cdr.detectChanges(); // forcer la détection de changement
+        }
+  });
   }
 }
