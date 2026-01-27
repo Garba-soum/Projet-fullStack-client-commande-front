@@ -10,10 +10,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
+  // Ne pas intercepter le login
+  if (req.url.includes('/auth/login')) {
+    return next(req);
+  }
+
   const token = authService.getAccessToken();
 
   // ✅ Si token présent → on ajoute le header Authorization
-  if (token && token.length > 0) {
+  if (token) {
     const authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`

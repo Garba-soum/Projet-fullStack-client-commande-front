@@ -86,3 +86,18 @@ input:focus, select:focus {
 .btn:hover:not(:disabled) {
   opacity: 0.92;
 }
+
+
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  margin: 12px 0 18px;
+  font-size: 14px;
+}
+
+.alert-danger {
+  background: #fde2e1;
+  border: 1px solid #f5b5b3;
+  color: #8a1f1b;
+}
+
