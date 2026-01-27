@@ -123,18 +123,26 @@ export class AuthService {
   const token = this.getAccessToken();
   if (!token) return false;
 
-  try {
-    const payload = JSON.parse(
-      atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
-    );
+  const payload = this.decodeJwtPayload(token);
+  if (!payload) return false;
 
-    const roles = payload.roles;
-    if (Array.isArray(roles)) return roles.includes('ROLE_ADMIN');
-    if (typeof roles === 'string') return roles.includes('ADMIN');
-    return false;
-  } catch {
-    return false;
+  const roles = payload.roles || payload.role || payload.authorities;
+
+  if (Array.isArray(roles)) {
+    return roles.join(' ').indexOf('ADMIN') !== -1;
   }
+  if (typeof roles === 'string') {
+    return roles.indexOf('ADMIN') !== -1;
+  }
+
+  // cas Spring Security avec authorities: [{authority:"ROLE_ADMIN"}]
+  if (payload.authorities && Array.isArray(payload.authorities)) {
+    const joined = payload.authorities
+      .map((a: any) => (a && a.authority ? a.authority : ''))
+      .join(' ');
+    return joined.indexOf('ADMIN') !== -1;
+  }
+  return false;
 }
 
 isTokenExpired(): boolean {

@@ -2,7 +2,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (route, state) => {
 
   const auth = inject(AuthService);
   const router = inject(Router);
@@ -11,16 +11,17 @@ export const authGuard: CanActivateFn = () => {
 
   // ❌ Pas de token → pas connecté
   if (!token) {
-    auth.logout();
-    router.navigateByUrl('/login');
-    return false;
+    return router.createUrlTree(['/login'], {
+        queryParams: { returnUrl: state.url }
+    });
   }
 
   // ❌ Token expiré → déconnexion propre
   if (auth.isTokenExpired()) {
     auth.logout();
-    router.navigateByUrl('/login');
-    return false;
+    return router.createUrlTree(['/login'], {
+        queryParams: { returnUrl: state.url }
+    });
   }
 
   // ✅ Token valide → accès autorisé
