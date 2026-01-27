@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 
@@ -22,7 +22,8 @@ export class Login {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   onSubmit(): void {
@@ -36,7 +37,10 @@ export class Login {
     login$.subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigateByUrl('/clients');
+        
+        // retour là où l'utilisateur voulait aller
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/clients';
+        this.router.navigateByUrl(returnUrl);
       },
       error: () => {
         this.loading = false;
