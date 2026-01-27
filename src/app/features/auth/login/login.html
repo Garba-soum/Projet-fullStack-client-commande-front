@@ -58,9 +58,9 @@
         </select>
       </div>
 
-      <button type="submit" [disabled]="loading || f.invalid">
-  {{ loading ? 'Connexion...' : 'Se connecter' }}
-</button>
+      <button type="submit" class="btn btn-primary" [disabled]="loading || f.invalid">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
     </form>
   </div>
 </div>

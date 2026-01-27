@@ -43,6 +43,7 @@
           <th>Nom</th>
           <th>Email</th>
           <th>Téléphone</th>
+          <th>Commandes</th>
           <th class="col-actions" *ngIf="isAdmin">Actions</th>
         </tr>
       </thead>
@@ -52,6 +53,18 @@
           <td>{{ c.nom }}</td>
           <td class="mono">{{ c.email }}</td>
           <td class="mono">{{ c.telephone }}</td>
+
+          <td class="mono">
+            {{ c.ordersCount ?? 0 }}
+            <button
+              type="button"
+              class="btn btn-small btn-secondary"
+              style="margin-left: 8px;"
+              (click)="goToClientOrders(c.id)"
+            >
+              Voir
+            </button>
+          </td>
 
           <td class="col-actions" *ngIf="isAdmin">
             <button

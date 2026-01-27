@@ -13,4 +13,6 @@ export interface Client {
     nom: string;
     email: string;
     telephone: string;
+
+    ordersCount?: number; // nombre de commandes
 }
