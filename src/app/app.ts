@@ -1,12 +1,46 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
+import { AuthService } from './services/auth.service';
+import { ToastService } from './services/toast.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  // ✅ RouterModule = routerLink, routerLinkActive, routerLinkActiveOptions, router-outlet
+  imports: [CommonModule, RouterModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css'] // ✅ styleUrls (pas styleUrl)
 })
-export class App {
-  protected readonly title = signal('client-commande-front');
+export class App implements OnInit {
+
+  isAdmin: boolean = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    public toast: ToastService
+  ) {}
+
+  ngOnInit(): void {
+    this.refreshRole();
+  }
+
+  // ✅ connecté ?
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  // ✅ admin ?
+  refreshRole(): void {
+    this.isAdmin = this.authService.isAdmin();
+  }
+
+  // 🔓 Déconnexion
+  logout(): void {
+    this.authService.logout();
+    this.isAdmin = false;
+    this.router.navigateByUrl('/login');
+  }
 }
