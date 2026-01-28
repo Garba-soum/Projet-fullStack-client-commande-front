@@ -21,17 +21,13 @@ export class AuthService {
     }
   }
 
-  // LOGIN USER
-  loginUser(username: string, password: string): Observable<AuthResponse> {
+  // 🔐 Login
+  login(username: string, password: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(this.apiUrl + '/auth/login', { username: username, password: password })
-      .pipe(tap((res: AuthResponse) => this.storeTokens(res)));
-  }
-
-  // LOGIN ADMIN (si backend utilise role dans body)
-  loginAdmin(username: string, password: string): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(this.apiUrl + '/auth/login', { username: username, password: password, role: 'ADMIN' })
+      .post<AuthResponse>(this.apiUrl + '/auth/login', {
+        username: username,
+        password: password
+      })
       .pipe(tap((res: AuthResponse) => this.storeTokens(res)));
   }
 
@@ -165,4 +161,20 @@ isTokenExpired(): boolean {
 }
 
 
+// Créer user 
+register(username: string, password: string, email?: string): Observable<any> {
+  return this.http.post(this.apiUrl + '/auth/register',
+    { username, password, email, role: 'USER' },
+    { responseType: 'text' } 
+  );
+}
+
+// Créer admin
+registerAdmin(username: string, password: string, email?: string): Observable<any> {
+  return this.http.post<any>(this.apiUrl + '/auth/register-admin', {
+     username: username,
+     password: password,
+    email: email
+   });
+  }
 }
