@@ -12,10 +12,13 @@ import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { CommandesEdit } from './features/commandes-edit/commandes-edit';
 import { guestGuard } from './core/guards/guest.guard';
+import { AdminCreate } from './features/admin-create/admin-create';
+import { Register } from './features/auth/login/register/register';
 
 export const routes: Routes = [
   // Public
   { path: 'login', component: Login, canActivate: [guestGuard] },
+  { path: 'register', component: Register, canActivate: [guestGuard] },
 
   // Auth (USER + ADMIN)
   { path: 'clients', component: Clients, canActivate: [authGuard] },
@@ -26,6 +29,7 @@ export const routes: Routes = [
   { path: 'clients/:id/edit', component: ClientsEdit, canActivate: [adminGuard] },
   { path: 'commandes/add', component: CommandesAdd, canActivate: [adminGuard] },
   { path: 'commandes/:id/edit', component: CommandesEdit, canActivate: [adminGuard] },
+  { path: 'admin/create', component: AdminCreate, canActivate: [adminGuard] }, 
 
 
   // Default + fallback

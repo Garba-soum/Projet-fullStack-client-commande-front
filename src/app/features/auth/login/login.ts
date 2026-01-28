@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './login.html',
   styleUrls: ['./login.css'] // ✅ important
 })
@@ -17,7 +17,7 @@ export class Login {
 
   username: string = '';
   password: string = '';
-  role: 'USER' | 'ADMIN' = 'USER';
+  
 
   loading: boolean = false;
   errorMessage: string = '';
@@ -34,15 +34,10 @@ export class Login {
     this.errorMessage = '';
     this.loading = true;
 
-    const login$ = this.role === 'ADMIN' ?
-      this.authService.loginAdmin(this.username, this.password) :
-      this.authService.loginUser(this.username, this.password);
+  this.authService.login(this.username, this.password)
+  .pipe(finalize(() => (this.loading = false)))
+  .subscribe({
 
-      console.log('SUBMIT start - loading:', this.loading);
-
-      login$
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
         next: () => {
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/clients';
           this.router.navigateByUrl(returnUrl);
