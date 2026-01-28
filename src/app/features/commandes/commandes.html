@@ -1,9 +1,18 @@
+<!--  Indique si un filtre client est actif -->
+<div *ngIf="selectedClientId" style="margin: 10px 0;">
+  <strong>Filtre :</strong> commandes du client #{{ selectedClientId }}
+  <button type="button" class="refresh" style="margin-left: 10px;" (click)="clearClientFilter()">
+    Tout afficher
+  </button>
+</div>
+
+
 <h2>Liste des commandes</h2>
 
-<!-- ✅ Lien Ajouter visible uniquement pour ADMIN -->
+<!-- Lien Ajouter visible uniquement pour ADMIN -->
 <a *ngIf="isAdmin" routerLink="/commandes/add">+ Ajouter une commande</a>
 
-<!-- ✅ Message pour USER -->
+<!-- Message pour USER -->
 <p *ngIf="!isAdmin">Création réservée à un ADMIN.</p>
 
 <p *ngIf="loading" class="loading">Chargement...</p>
@@ -23,7 +32,7 @@
       Date : {{ c.dateCommande ? (c.dateCommande | slice:0:10) : '-' }}
     </div>
 
-    <!-- ✅ Actions ADMIN -->
+    <!--  Actions ADMIN -->
     <div *ngIf="isAdmin" class="commande-actions">
       <button
         type="button"
@@ -54,6 +63,4 @@
   Aucune commande trouvée.
 </p>
 
-<button class="refresh" type="button" (click)="loadCommandes()">
-  Rafraîchir
-</button>
+

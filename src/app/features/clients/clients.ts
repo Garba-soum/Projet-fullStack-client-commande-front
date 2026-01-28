@@ -127,4 +127,8 @@ export class Clients implements OnInit {
   goToEdit(id: number): void {
     this.router.navigateByUrl('/clients/' + id + '/edit');
   }
+
+  goToClientOrders(clientId: number): void {
+  this.router.navigate(['/commandes'], { queryParams: { clientId: clientId } });
+}
 }
